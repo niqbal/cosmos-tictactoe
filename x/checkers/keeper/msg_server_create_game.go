@@ -13,13 +13,15 @@ func (k msgServer) CreateGame(goCtx context.Context, msg *types.MsgCreateGame) (
 
 	// TODO: Handling the message
 	nextGame, found := k.Keeper.GetNextGame(ctx)
-	newIndex := "1"
-	if found {
-		newIndex = strconv.FormatUint(nextGame.IdValue, 10)
+	if !found {
+		panic("nextGame index failure!")
 	}
+
+	newIndex := strconv.FormatUint(nextGame.IdValue, 10)
 
 	newGame := ""
 	storedGame := types.StoredGame{
+		IdValue:      nextGame.IdValue,
 		Creator:      msg.Creator,
 		Index:        newIndex,
 		Game:         newGame,
