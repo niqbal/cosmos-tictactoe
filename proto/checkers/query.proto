@@ -7,6 +7,7 @@ import "cosmos/base/query/v1beta1/pagination.proto";
 import "checkers/params.proto";
 import "checkers/next_game.proto";
 import "checkers/stored_game.proto";
+import "checkers/waiting_game.proto";
 // this line is used by starport scaffolding # 1
 
 option go_package = "github.com/alice/checkers/x/checkers/types";
@@ -29,6 +30,16 @@ service Query {
 	// Queries a list of StoredGame items.
 	rpc StoredGameAll(QueryAllStoredGameRequest) returns (QueryAllStoredGameResponse) {
 		option (google.api.http).get = "/alice/checkers/checkers/stored_game";
+	}
+
+// Queries a WaitingGame by index.
+	rpc WaitingGame(QueryGetWaitingGameRequest) returns (QueryGetWaitingGameResponse) {
+		option (google.api.http).get = "/alice/checkers/checkers/waiting_game/{index}";
+	}
+
+	// Queries a list of WaitingGame items.
+	rpc WaitingGameAll(QueryAllWaitingGameRequest) returns (QueryAllWaitingGameResponse) {
+		option (google.api.http).get = "/alice/checkers/checkers/waiting_game";
 	}
 
 // this line is used by starport scaffolding # 2
@@ -63,6 +74,24 @@ message QueryAllStoredGameRequest {
 
 message QueryAllStoredGameResponse {
 	repeated StoredGame storedGame = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetWaitingGameRequest {
+	  string index = 1;
+
+}
+
+message QueryGetWaitingGameResponse {
+	WaitingGame waitingGame = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllWaitingGameRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllWaitingGameResponse {
+	repeated WaitingGame waitingGame = 1 [(gogoproto.nullable) = false];
 	cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 

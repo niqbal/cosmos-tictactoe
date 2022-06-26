@@ -3,9 +3,10 @@ import { txClient, queryClient, MissingWalletError , registry} from './module'
 import { NextGame } from "./module/types/checkers/next_game"
 import { Params } from "./module/types/checkers/params"
 import { StoredGame } from "./module/types/checkers/stored_game"
+import { WaitingGame } from "./module/types/checkers/waiting_game"
 
 
-export { NextGame, Params, StoredGame };
+export { NextGame, Params, StoredGame, WaitingGame };
 
 async function initTxClient(vuexGetters) {
 	return await txClient(vuexGetters['common/wallet/signer'], {
@@ -47,11 +48,14 @@ const getDefaultState = () => {
 				NextGame: {},
 				StoredGame: {},
 				StoredGameAll: {},
+				WaitingGame: {},
+				WaitingGameAll: {},
 				
 				_Structure: {
 						NextGame: getStructure(NextGame.fromPartial({})),
 						Params: getStructure(Params.fromPartial({})),
 						StoredGame: getStructure(StoredGame.fromPartial({})),
+						WaitingGame: getStructure(WaitingGame.fromPartial({})),
 						
 		},
 		_Registry: registry,
@@ -103,6 +107,18 @@ export default {
 						(<any> params).query=null
 					}
 			return state.StoredGameAll[JSON.stringify(params)] ?? {}
+		},
+				getWaitingGame: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.WaitingGame[JSON.stringify(params)] ?? {}
+		},
+				getWaitingGameAll: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.WaitingGameAll[JSON.stringify(params)] ?? {}
 		},
 				
 		getTypeStructure: (state) => (type) => {
@@ -225,6 +241,54 @@ export default {
 				return getters['getStoredGameAll']( { params: {...key}, query}) ?? {}
 			} catch (e) {
 				throw new Error('QueryClient:QueryStoredGameAll API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
+		
+		
+		 		
+		
+		
+		async QueryWaitingGame({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const queryClient=await initQueryClient(rootGetters)
+				let value= (await queryClient.queryWaitingGame( key.index)).data
+				
+					
+				commit('QUERY', { query: 'WaitingGame', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryWaitingGame', payload: { options: { all }, params: {...key},query }})
+				return getters['getWaitingGame']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QueryWaitingGame API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
+		
+		
+		 		
+		
+		
+		async QueryWaitingGameAll({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const queryClient=await initQueryClient(rootGetters)
+				let value= (await queryClient.queryWaitingGameAll(query)).data
+				
+					
+				while (all && (<any> value).pagination && (<any> value).pagination.next_key!=null) {
+					let next_values=(await queryClient.queryWaitingGameAll({...query, 'pagination.key':(<any> value).pagination.next_key})).data
+					value = mergeResults(value, next_values);
+				}
+				commit('QUERY', { query: 'WaitingGameAll', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryWaitingGameAll', payload: { options: { all }, params: {...key},query }})
+				return getters['getWaitingGameAll']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QueryWaitingGameAll API Node Unavailable. Could not perform query: ' + e.message)
 				
 			}
 		},

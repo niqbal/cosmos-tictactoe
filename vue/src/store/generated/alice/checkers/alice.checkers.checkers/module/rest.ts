@@ -40,12 +40,31 @@ export interface CheckersQueryAllStoredGameResponse {
   pagination?: V1Beta1PageResponse;
 }
 
+export interface CheckersQueryAllWaitingGameResponse {
+  waitingGame?: CheckersWaitingGame[];
+
+  /**
+   * PageResponse is to be embedded in gRPC response messages where the
+   * corresponding request message has used PageRequest.
+   *
+   *  message SomeResponse {
+   *          repeated Bar results = 1;
+   *          PageResponse page = 2;
+   *  }
+   */
+  pagination?: V1Beta1PageResponse;
+}
+
 export interface CheckersQueryGetNextGameResponse {
   NextGame?: CheckersNextGame;
 }
 
 export interface CheckersQueryGetStoredGameResponse {
   storedGame?: CheckersStoredGame;
+}
+
+export interface CheckersQueryGetWaitingGameResponse {
+  waitingGame?: CheckersWaitingGame;
 }
 
 /**
@@ -65,6 +84,14 @@ export interface CheckersStoredGame {
   game?: string;
   crossPlayer?: string;
   circlePlayer?: string;
+}
+
+export interface CheckersWaitingGame {
+  index?: string;
+  creator?: string;
+
+  /** @format uint64 */
+  idValue?: string;
 }
 
 export interface ProtobufAny {
@@ -406,6 +433,48 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryStoredGame = (index: string, params: RequestParams = {}) =>
     this.request<CheckersQueryGetStoredGameResponse, RpcStatus>({
       path: `/alice/checkers/checkers/stored_game/${index}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryWaitingGameAll
+   * @summary Queries a list of WaitingGame items.
+   * @request GET:/alice/checkers/checkers/waiting_game
+   */
+  queryWaitingGameAll = (
+    query?: {
+      "pagination.key"?: string;
+      "pagination.offset"?: string;
+      "pagination.limit"?: string;
+      "pagination.count_total"?: boolean;
+      "pagination.reverse"?: boolean;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<CheckersQueryAllWaitingGameResponse, RpcStatus>({
+      path: `/alice/checkers/checkers/waiting_game`,
+      method: "GET",
+      query: query,
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryWaitingGame
+   * @summary Queries a WaitingGame by index.
+   * @request GET:/alice/checkers/checkers/waiting_game/{index}
+   */
+  queryWaitingGame = (index: string, params: RequestParams = {}) =>
+    this.request<CheckersQueryGetWaitingGameResponse, RpcStatus>({
+      path: `/alice/checkers/checkers/waiting_game/${index}`,
       method: "GET",
       format: "json",
       ...params,

@@ -7,6 +7,7 @@ import {
   PageRequest,
   PageResponse,
 } from "../cosmos/base/query/v1beta1/pagination";
+import { WaitingGame } from "../checkers/waiting_game";
 
 export const protobufPackage = "alice.checkers.checkers";
 
@@ -39,6 +40,23 @@ export interface QueryAllStoredGameRequest {
 
 export interface QueryAllStoredGameResponse {
   storedGame: StoredGame[];
+  pagination: PageResponse | undefined;
+}
+
+export interface QueryGetWaitingGameRequest {
+  index: string;
+}
+
+export interface QueryGetWaitingGameResponse {
+  waitingGame: WaitingGame | undefined;
+}
+
+export interface QueryAllWaitingGameRequest {
+  pagination: PageRequest | undefined;
+}
+
+export interface QueryAllWaitingGameResponse {
+  waitingGame: WaitingGame[];
   pagination: PageResponse | undefined;
 }
 
@@ -571,6 +589,323 @@ export const QueryAllStoredGameResponse = {
   },
 };
 
+const baseQueryGetWaitingGameRequest: object = { index: "" };
+
+export const QueryGetWaitingGameRequest = {
+  encode(
+    message: QueryGetWaitingGameRequest,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.index !== "") {
+      writer.uint32(10).string(message.index);
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): QueryGetWaitingGameRequest {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryGetWaitingGameRequest,
+    } as QueryGetWaitingGameRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.index = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetWaitingGameRequest {
+    const message = {
+      ...baseQueryGetWaitingGameRequest,
+    } as QueryGetWaitingGameRequest;
+    if (object.index !== undefined && object.index !== null) {
+      message.index = String(object.index);
+    } else {
+      message.index = "";
+    }
+    return message;
+  },
+
+  toJSON(message: QueryGetWaitingGameRequest): unknown {
+    const obj: any = {};
+    message.index !== undefined && (obj.index = message.index);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryGetWaitingGameRequest>
+  ): QueryGetWaitingGameRequest {
+    const message = {
+      ...baseQueryGetWaitingGameRequest,
+    } as QueryGetWaitingGameRequest;
+    if (object.index !== undefined && object.index !== null) {
+      message.index = object.index;
+    } else {
+      message.index = "";
+    }
+    return message;
+  },
+};
+
+const baseQueryGetWaitingGameResponse: object = {};
+
+export const QueryGetWaitingGameResponse = {
+  encode(
+    message: QueryGetWaitingGameResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.waitingGame !== undefined) {
+      WaitingGame.encode(
+        message.waitingGame,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): QueryGetWaitingGameResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryGetWaitingGameResponse,
+    } as QueryGetWaitingGameResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.waitingGame = WaitingGame.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetWaitingGameResponse {
+    const message = {
+      ...baseQueryGetWaitingGameResponse,
+    } as QueryGetWaitingGameResponse;
+    if (object.waitingGame !== undefined && object.waitingGame !== null) {
+      message.waitingGame = WaitingGame.fromJSON(object.waitingGame);
+    } else {
+      message.waitingGame = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: QueryGetWaitingGameResponse): unknown {
+    const obj: any = {};
+    message.waitingGame !== undefined &&
+      (obj.waitingGame = message.waitingGame
+        ? WaitingGame.toJSON(message.waitingGame)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryGetWaitingGameResponse>
+  ): QueryGetWaitingGameResponse {
+    const message = {
+      ...baseQueryGetWaitingGameResponse,
+    } as QueryGetWaitingGameResponse;
+    if (object.waitingGame !== undefined && object.waitingGame !== null) {
+      message.waitingGame = WaitingGame.fromPartial(object.waitingGame);
+    } else {
+      message.waitingGame = undefined;
+    }
+    return message;
+  },
+};
+
+const baseQueryAllWaitingGameRequest: object = {};
+
+export const QueryAllWaitingGameRequest = {
+  encode(
+    message: QueryAllWaitingGameRequest,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): QueryAllWaitingGameRequest {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllWaitingGameRequest,
+    } as QueryAllWaitingGameRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllWaitingGameRequest {
+    const message = {
+      ...baseQueryAllWaitingGameRequest,
+    } as QueryAllWaitingGameRequest;
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageRequest.fromJSON(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: QueryAllWaitingGameRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllWaitingGameRequest>
+  ): QueryAllWaitingGameRequest {
+    const message = {
+      ...baseQueryAllWaitingGameRequest,
+    } as QueryAllWaitingGameRequest;
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageRequest.fromPartial(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
+    return message;
+  },
+};
+
+const baseQueryAllWaitingGameResponse: object = {};
+
+export const QueryAllWaitingGameResponse = {
+  encode(
+    message: QueryAllWaitingGameResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    for (const v of message.waitingGame) {
+      WaitingGame.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): QueryAllWaitingGameResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllWaitingGameResponse,
+    } as QueryAllWaitingGameResponse;
+    message.waitingGame = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.waitingGame.push(WaitingGame.decode(reader, reader.uint32()));
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllWaitingGameResponse {
+    const message = {
+      ...baseQueryAllWaitingGameResponse,
+    } as QueryAllWaitingGameResponse;
+    message.waitingGame = [];
+    if (object.waitingGame !== undefined && object.waitingGame !== null) {
+      for (const e of object.waitingGame) {
+        message.waitingGame.push(WaitingGame.fromJSON(e));
+      }
+    }
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageResponse.fromJSON(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: QueryAllWaitingGameResponse): unknown {
+    const obj: any = {};
+    if (message.waitingGame) {
+      obj.waitingGame = message.waitingGame.map((e) =>
+        e ? WaitingGame.toJSON(e) : undefined
+      );
+    } else {
+      obj.waitingGame = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllWaitingGameResponse>
+  ): QueryAllWaitingGameResponse {
+    const message = {
+      ...baseQueryAllWaitingGameResponse,
+    } as QueryAllWaitingGameResponse;
+    message.waitingGame = [];
+    if (object.waitingGame !== undefined && object.waitingGame !== null) {
+      for (const e of object.waitingGame) {
+        message.waitingGame.push(WaitingGame.fromPartial(e));
+      }
+    }
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageResponse.fromPartial(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
@@ -585,6 +920,14 @@ export interface Query {
   StoredGameAll(
     request: QueryAllStoredGameRequest
   ): Promise<QueryAllStoredGameResponse>;
+  /** Queries a WaitingGame by index. */
+  WaitingGame(
+    request: QueryGetWaitingGameRequest
+  ): Promise<QueryGetWaitingGameResponse>;
+  /** Queries a list of WaitingGame items. */
+  WaitingGameAll(
+    request: QueryAllWaitingGameRequest
+  ): Promise<QueryAllWaitingGameResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -641,6 +984,34 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryAllStoredGameResponse.decode(new Reader(data))
+    );
+  }
+
+  WaitingGame(
+    request: QueryGetWaitingGameRequest
+  ): Promise<QueryGetWaitingGameResponse> {
+    const data = QueryGetWaitingGameRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "alice.checkers.checkers.Query",
+      "WaitingGame",
+      data
+    );
+    return promise.then((data) =>
+      QueryGetWaitingGameResponse.decode(new Reader(data))
+    );
+  }
+
+  WaitingGameAll(
+    request: QueryAllWaitingGameRequest
+  ): Promise<QueryAllWaitingGameResponse> {
+    const data = QueryAllWaitingGameRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "alice.checkers.checkers.Query",
+      "WaitingGameAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryAllWaitingGameResponse.decode(new Reader(data))
     );
   }
 }
