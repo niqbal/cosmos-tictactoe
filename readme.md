@@ -1,52 +1,68 @@
-# checkers
-**checkers** is a blockchain built using Cosmos SDK and Tendermint and created with [Ignite CLI](https://ignite.com/cli).
 
-## Get started
+Tic Tac Toe
+=
 
-```
-ignite chain serve
-```
+Commands
+-
 
-`serve` command installs dependencies, builds, initializes, and starts your blockchain in development.
 
-### Configure
+These commands were used to generate the scaffolding for this game:
 
-Your blockchain in development can be configured with `config.yml`. To learn more, see the [Ignite CLI docs](https://docs.ignite.com).
+*NOTE*: The original repository was created from a command which used `checkers` module name as an example, hence this repository and commands mention checkers (instead of tictactoe).
 
-### Web Frontend
+This work doesn't have any test automation, which will be necessary for any production code. Rules of the game were extracted in `rules.go` and tested manually using main method in the same file. 
 
-Ignite CLI has scaffolded a Vue.js-based web app in the `vue` directory. Run the following commands to install dependencies and start the app:
+
+Storage/Schema
 
 ```
-cd vue
-npm install
-npm run serve
+ignite scaffold single nextGame creator idValue:uint --module checkers --no-message
+ignite scaffold map waitingGame creator idValue:uint --module checkers --no-message
+ignite scaffold map storedGame creator idValue:uint game crossPlayer circlePlayer --module checkers --no-message
 ```
 
-The frontend app is built using the `@starport/vue` and `@starport/vuex` packages. For details, see the [monorepo for Ignite front-end development](https://github.com/ignite-hq/web).
-
-## Release
-To release a new version of your blockchain, create and push a new tag with `v` prefix. A new draft release with the configured targets will be created.
+Messages
 
 ```
-git tag v0.1
-git push origin v0.1
+ignite scaffold message createGame --module checkers --response idValue
+ignite scaffold message joinGame idValue:uint --module checkers --response success:bool
+ignite scaffold message markSpace idValue:uint x:uint y:uint --module checkers --response success:bool
 ```
 
-After a draft release is created, make your final changes from the release page and publish it.
 
-### Install
-To install the latest version of your blockchain node's binary, execute the following command on your machine:
+How to Interact with the game
+=
+
+You can use the following CLI instructions to interact with the game
+
+I had to declare the following alias as the `checkersd` command was not added to my environment already. 
+
+`alias tictactoe='go run cmd/checkersd/main.go'`
+
+
+Export these pre-created users's addresses in environment, so that they can be used in the game commands:
 
 ```
-curl https://get.ignite.com/alice/checkers@latest! | sudo bash
+export alice=$(tictactoe keys show alice -a)
+export bob=$(tictactoe keys show bob -a)
 ```
-`alice/checkers` should match the `username` and `repo_name` of the Github repository to which the source code was pushed. Learn more about [the install process](https://github.com/allinbits/starport-installer).
 
-## Learn more
+Explore the commands, and state in stores:
 
-- [Ignite CLI](https://ignite.com/cli)
-- [Tutorials](https://docs.ignite.com/guide)
-- [Ignite CLI docs](https://docs.ignite.com)
-- [Cosmos SDK docs](https://docs.cosmos.network)
-- [Developer Chat](https://discord.gg/ignite)
+```
+tictactoe status | jq
+tictactoe query checkers --help 
+tictactoe query checkers list-stored-game 
+tictactoe query checkers list-waiting-game 
+```
+
+
+Play game
+
+```
+tictactoe tx checkers create-game --from $alice --gas auto
+tictactoe tx checkers join-game 1 --from $bob --gas auto
+tictactoe tx checkers mark-space 1 2 2 --from $bob --gas auto
+tictactoe tx checkers mark-space 1 2 2 --from $alice --gas auto
+```
+
