@@ -19,12 +19,12 @@ func (k msgServer) CreateGame(goCtx context.Context, msg *types.MsgCreateGame) (
 
 	newIndex := strconv.FormatUint(nextGame.IdValue, 10)
 
-	newGame := ""
+	newGame := types.New()
 	storedGame := types.StoredGame{
 		IdValue:      nextGame.IdValue,
 		Creator:      msg.Creator,
 		Index:        newIndex,
-		Game:         newGame,
+		Game:         newGame.String(),
 		CrossPlayer:  msg.Creator,
 		CirclePlayer: msg.Creator,
 	}

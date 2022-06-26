@@ -1,6 +1,4 @@
-package main
-
-// package types
+package types
 
 import (
 	"bytes"
