@@ -30864,6 +30864,11 @@ definitions:
     properties:
       success:
         type: boolean
+  alice.checkers.checkers.MsgMarkSpaceResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
   alice.checkers.checkers.NextGame:
     type: object
     properties:

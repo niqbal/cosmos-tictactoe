@@ -17,6 +17,10 @@ export interface CheckersMsgJoinGameResponse {
   success?: boolean;
 }
 
+export interface CheckersMsgMarkSpaceResponse {
+  success?: boolean;
+}
+
 export interface CheckersNextGame {
   creator?: string;
 

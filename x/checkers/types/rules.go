@@ -24,8 +24,8 @@ var CIRCLE_MARK = Mark{mark: CIRCLE}
 var EMPTY_MARK = Mark{mark: EMPTY}
 
 type Pos struct {
-	X int
-	Y int
+	X uint64
+	Y uint64
 }
 
 type Game struct {
@@ -40,8 +40,8 @@ func New() *Game {
 }
 
 func (game *Game) initializeSpace() {
-	for i := 0; i < BOARD_DIM; i++ {
-		for j := 0; j < BOARD_DIM; j++ {
+	for i := uint64(0); i < BOARD_DIM; i++ {
+		for j := uint64(0); j < BOARD_DIM; j++ {
 			game.Pieces[Pos{X: i, Y: j}] = EMPTY
 		}
 	}
@@ -59,8 +59,8 @@ func (game *Game) GetTurn() Mark {
 
 func (game *Game) getEmptyCount() int {
 	emptyCount := 0
-	for i := 0; i < BOARD_DIM; i++ {
-		for j := 0; j < BOARD_DIM; j++ {
+	for i := uint64(0); i < BOARD_DIM; i++ {
+		for j := uint64(0); j < BOARD_DIM; j++ {
 
 			if game.Pieces[Pos{X: i, Y: j}] == EMPTY {
 				emptyCount++
@@ -72,9 +72,9 @@ func (game *Game) getEmptyCount() int {
 }
 
 func (game *Game) FindWinner() Mark {
-	for i := 0; i < BOARD_DIM; i++ {
+	for i := uint64(0); i < BOARD_DIM; i++ {
 		winnerMark := Mark{game.Pieces[Pos{X: i, Y: 0}]}
-		for j := 0; j < BOARD_DIM; j++ {
+		for j := uint64(0); j < BOARD_DIM; j++ {
 			if game.Pieces[Pos{X: i, Y: j}] != winnerMark.mark {
 				winnerMark = EMPTY_MARK
 				break
@@ -86,9 +86,9 @@ func (game *Game) FindWinner() Mark {
 		}
 	}
 
-	for j := 0; j < BOARD_DIM; j++ {
+	for j := uint64(0); j < BOARD_DIM; j++ {
 		winnerMark := Mark{game.Pieces[Pos{X: 0, Y: j}]}
-		for i := 0; i < BOARD_DIM; i++ {
+		for i := uint64(0); i < BOARD_DIM; i++ {
 			// fmt.Println(fmt.Sprintln("x:%v y:%v value:%v", i, j, game.Pieces[Pos{X: i, Y: j}]))
 			if game.Pieces[Pos{X: i, Y: j}] != winnerMark.mark {
 				winnerMark = EMPTY_MARK
@@ -102,7 +102,7 @@ func (game *Game) FindWinner() Mark {
 	}
 
 	winnerMark := Mark{game.Pieces[Pos{X: 0, Y: 0}]}
-	for i := 0; i < BOARD_DIM; i++ {
+	for i := uint64(0); i < BOARD_DIM; i++ {
 		if game.Pieces[Pos{X: i, Y: i}] != game.Pieces[Pos{X: 0, Y: 0}] {
 			winnerMark = EMPTY_MARK
 			break
@@ -115,7 +115,7 @@ func (game *Game) FindWinner() Mark {
 
 	winnerMark = Mark{game.Pieces[Pos{X: BOARD_DIM - 1, Y: 0}]}
 
-	for i := 0; i < BOARD_DIM; i++ {
+	for i := uint64(0); i < BOARD_DIM; i++ {
 		if game.Pieces[Pos{X: BOARD_DIM - 1 - i, Y: i}] != game.Pieces[Pos{X: BOARD_DIM - 1, Y: 0}] {
 			winnerMark = EMPTY_MARK
 			break
@@ -161,8 +161,8 @@ func (game *Game) IsCircleTurn() bool {
 
 func (game *Game) String() string {
 	var buf bytes.Buffer
-	for i := 0; i < BOARD_DIM; i++ {
-		for j := 0; j < BOARD_DIM; j++ {
+	for i := uint64(0); i < BOARD_DIM; i++ {
+		for j := uint64(0); j < BOARD_DIM; j++ {
 			buf.WriteString(game.Pieces[Pos{X: i, Y: j}])
 		}
 		if i < (BOARD_DIM - 1) {
@@ -184,7 +184,7 @@ func Parse(s string) (*Game, error) {
 				return nil, errors.New(fmt.Sprintf("invalid board, mark out of bounds: %v, %v", x, y))
 			}
 			if isValidMark(c) {
-				result.Pieces[Pos{y, x}] = c
+				result.Pieces[Pos{uint64(y), uint64(x)}] = c
 			} else {
 				return nil, errors.New(fmt.Sprintf("invalid board, invalid mark at %v, %v", x, y))
 			}

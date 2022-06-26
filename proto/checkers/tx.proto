@@ -9,6 +9,7 @@ option go_package = "github.com/alice/checkers/x/checkers/types";
 service Msg {
       rpc CreateGame(MsgCreateGame) returns (MsgCreateGameResponse);
   rpc JoinGame(MsgJoinGame) returns (MsgJoinGameResponse);
+  rpc MarkSpace(MsgMarkSpace) returns (MsgMarkSpaceResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
 }
 
@@ -26,6 +27,17 @@ message MsgJoinGame {
 }
 
 message MsgJoinGameResponse {
+  bool success = 1;
+}
+
+message MsgMarkSpace {
+  string creator = 1;
+  uint64 idValue = 2;
+  uint64 x = 3;
+  uint64 y = 4;
+}
+
+message MsgMarkSpaceResponse {
   bool success = 1;
 }
 

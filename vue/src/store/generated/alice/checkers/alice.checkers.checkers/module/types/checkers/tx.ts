@@ -21,6 +21,17 @@ export interface MsgJoinGameResponse {
   success: boolean;
 }
 
+export interface MsgMarkSpace {
+  creator: string;
+  idValue: number;
+  x: number;
+  y: number;
+}
+
+export interface MsgMarkSpaceResponse {
+  success: boolean;
+}
+
 const baseMsgCreateGame: object = { creator: "" };
 
 export const MsgCreateGame = {
@@ -266,11 +277,176 @@ export const MsgJoinGameResponse = {
   },
 };
 
+const baseMsgMarkSpace: object = { creator: "", idValue: 0, x: 0, y: 0 };
+
+export const MsgMarkSpace = {
+  encode(message: MsgMarkSpace, writer: Writer = Writer.create()): Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.idValue !== 0) {
+      writer.uint32(16).uint64(message.idValue);
+    }
+    if (message.x !== 0) {
+      writer.uint32(24).uint64(message.x);
+    }
+    if (message.y !== 0) {
+      writer.uint32(32).uint64(message.y);
+    }
+    return writer;
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): MsgMarkSpace {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgMarkSpace } as MsgMarkSpace;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.idValue = longToNumber(reader.uint64() as Long);
+          break;
+        case 3:
+          message.x = longToNumber(reader.uint64() as Long);
+          break;
+        case 4:
+          message.y = longToNumber(reader.uint64() as Long);
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgMarkSpace {
+    const message = { ...baseMsgMarkSpace } as MsgMarkSpace;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
+    } else {
+      message.creator = "";
+    }
+    if (object.idValue !== undefined && object.idValue !== null) {
+      message.idValue = Number(object.idValue);
+    } else {
+      message.idValue = 0;
+    }
+    if (object.x !== undefined && object.x !== null) {
+      message.x = Number(object.x);
+    } else {
+      message.x = 0;
+    }
+    if (object.y !== undefined && object.y !== null) {
+      message.y = Number(object.y);
+    } else {
+      message.y = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: MsgMarkSpace): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.idValue !== undefined && (obj.idValue = message.idValue);
+    message.x !== undefined && (obj.x = message.x);
+    message.y !== undefined && (obj.y = message.y);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgMarkSpace>): MsgMarkSpace {
+    const message = { ...baseMsgMarkSpace } as MsgMarkSpace;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
+    } else {
+      message.creator = "";
+    }
+    if (object.idValue !== undefined && object.idValue !== null) {
+      message.idValue = object.idValue;
+    } else {
+      message.idValue = 0;
+    }
+    if (object.x !== undefined && object.x !== null) {
+      message.x = object.x;
+    } else {
+      message.x = 0;
+    }
+    if (object.y !== undefined && object.y !== null) {
+      message.y = object.y;
+    } else {
+      message.y = 0;
+    }
+    return message;
+  },
+};
+
+const baseMsgMarkSpaceResponse: object = { success: false };
+
+export const MsgMarkSpaceResponse = {
+  encode(
+    message: MsgMarkSpaceResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.success === true) {
+      writer.uint32(8).bool(message.success);
+    }
+    return writer;
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): MsgMarkSpaceResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgMarkSpaceResponse } as MsgMarkSpaceResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.success = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgMarkSpaceResponse {
+    const message = { ...baseMsgMarkSpaceResponse } as MsgMarkSpaceResponse;
+    if (object.success !== undefined && object.success !== null) {
+      message.success = Boolean(object.success);
+    } else {
+      message.success = false;
+    }
+    return message;
+  },
+
+  toJSON(message: MsgMarkSpaceResponse): unknown {
+    const obj: any = {};
+    message.success !== undefined && (obj.success = message.success);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgMarkSpaceResponse>): MsgMarkSpaceResponse {
+    const message = { ...baseMsgMarkSpaceResponse } as MsgMarkSpaceResponse;
+    if (object.success !== undefined && object.success !== null) {
+      message.success = object.success;
+    } else {
+      message.success = false;
+    }
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   CreateGame(request: MsgCreateGame): Promise<MsgCreateGameResponse>;
-  /** this line is used by starport scaffolding # proto/tx/rpc */
   JoinGame(request: MsgJoinGame): Promise<MsgJoinGameResponse>;
+  /** this line is used by starport scaffolding # proto/tx/rpc */
+  MarkSpace(request: MsgMarkSpace): Promise<MsgMarkSpaceResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -298,6 +474,18 @@ export class MsgClientImpl implements Msg {
       data
     );
     return promise.then((data) => MsgJoinGameResponse.decode(new Reader(data)));
+  }
+
+  MarkSpace(request: MsgMarkSpace): Promise<MsgMarkSpaceResponse> {
+    const data = MsgMarkSpace.encode(request).finish();
+    const promise = this.rpc.request(
+      "alice.checkers.checkers.Msg",
+      "MarkSpace",
+      data
+    );
+    return promise.then((data) =>
+      MsgMarkSpaceResponse.decode(new Reader(data))
+    );
   }
 }
 
