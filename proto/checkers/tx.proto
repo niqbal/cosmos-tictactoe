@@ -8,6 +8,7 @@ option go_package = "github.com/alice/checkers/x/checkers/types";
 // Msg defines the Msg service.
 service Msg {
       rpc CreateGame(MsgCreateGame) returns (MsgCreateGameResponse);
+  rpc JoinGame(MsgJoinGame) returns (MsgJoinGameResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
 }
 
@@ -17,6 +18,15 @@ message MsgCreateGame {
 
 message MsgCreateGameResponse {
   string idValue = 1;
+}
+
+message MsgJoinGame {
+  string creator = 1;
+  uint64 idValue = 2;
+}
+
+message MsgJoinGameResponse {
+  bool success = 1;
 }
 
 // this line is used by starport scaffolding # proto/tx/message

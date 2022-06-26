@@ -13,6 +13,10 @@ export interface CheckersMsgCreateGameResponse {
   idValue?: string;
 }
 
+export interface CheckersMsgJoinGameResponse {
+  success?: boolean;
+}
+
 export interface CheckersNextGame {
   creator?: string;
 
