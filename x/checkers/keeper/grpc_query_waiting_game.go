@@ -28,7 +28,11 @@ func (k Keeper) WaitingGameAll(c context.Context, req *types.QueryAllWaitingGame
 			return err
 		}
 
-		waitingGames = append(waitingGames, waitingGame)
+		_, found := k.GetStoredGame(ctx, waitingGame.Index)
+		if !found {
+			waitingGames = append(waitingGames, waitingGame)
+		}
+
 		return nil
 	})
 
