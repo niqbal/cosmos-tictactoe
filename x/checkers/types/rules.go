@@ -144,7 +144,7 @@ func (game *Game) MarkSpace(pos Pos, mark Mark) error {
 			game.Pieces[pos] = mark.mark
 			return nil
 		} else {
-			return errors.New(fmt.Sprintf("invalid move: %v", mark))
+			return errors.New(fmt.Sprintf("Not your turn: %v", mark))
 		}
 	}
 
